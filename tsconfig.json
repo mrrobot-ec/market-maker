@@ -1,21 +1,18 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "strict": true,
+    "types": ["jest"],
     "target": "ES2022",
-    "module": "CommonJS",
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
+    "module": "CommonJS",
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@entity/*": ["./src/entity/*"],
-      "@application/*": ["./src/application/*"],
-      "@presentation/*": ["./src/presentation/*"],
-      "@infrastructure/*": ["./src/infrastructure/*"]
-    }
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx","src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts",  "jest.config.ts"]
 }
