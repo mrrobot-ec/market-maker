@@ -1,13 +1,16 @@
 
 import WebSocket from 'ws';
 import { Container } from 'inversify';
-import container from '../container';
 import { HuobiRestService } from '../services/rest/HuobiRestService';
 import { KrakenRestService } from '../services/rest/KrakenRestService';
 import { IExchangeService } from '../../domain/interfaces/IExchangeService';
 import { BinanceWebSocketService } from '../services/websocket/BinanceWebSocketService';
 import { IMidPriceServiceFactory, IMidPriceService } from '../../domain/interfaces/IMidPriceService';
-import { ExchangeServiceSymbol, WebSocketSymbol, MidPriceServiceFactorySymbol, MidPriceServiceSymbol } from '../../domain/SymbolsForDI';
+import { ExchangeServiceSymbol, WebSocketSymbol, MidPriceServiceFactorySymbol, MidPriceServiceSymbol } from '../di/symbols';
+import {midPriceBinding} from "../di/bindings/midPriceBindings";
+import {exchangeServicesBinding} from "../di/bindings/exchangeServicesBindings";
+import {loggerBinding} from "../di/bindings/loggerBindings";
+import {webSocketBinding} from "../di/bindings/webSocketBindings";
 
 jest.mock('ws');
 jest.mock('../services/rest/HuobiRestService');
@@ -18,7 +21,18 @@ describe('Container Configuration', () => {
     let testContainer: Container;
 
     beforeEach(() => {
-        testContainer = container;
+        testContainer = new Container();
+        testContainer.load(
+          webSocketBinding,
+          loggerBinding,
+          exchangeServicesBinding,
+          midPriceBinding
+        );
+    });
+
+    test('should bind and resolve KrakenRestService when successful', async () => {
+        const krakenService = await testContainer.getNamedAsync<IExchangeService>(ExchangeServiceSymbol, 'kraken');
+        expect(krakenService).toBeDefined();
     });
 
     test('should bind and resolve KrakenRestService when succesfull', async () => {

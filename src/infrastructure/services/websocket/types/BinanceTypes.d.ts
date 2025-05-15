@@ -1,7 +1,7 @@
 export type AskEntry = [string, string];
 export type BidEntry = [string, string];
 
-export interface BinanceDataType {
+export interface BinanceResponse {
   e: string;          // Event type (e.g., 'depthUpdate')
   s: string;          // Symbol (e.g., 'BTCUSDT')
   u: number;          // Update ID

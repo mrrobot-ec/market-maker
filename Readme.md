@@ -1,3 +1,4 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mrrobot-ec/market-maker)
 # Exchange MidPrice Service
 
 This project is a **TypeScript-based** application that retrieves and manages mid-prices from multiple cryptocurrency exchanges using **Express**, **Inversify**, **Jest**, **Winston**, and **Swagger**. The code adheres to **SOLID principles** and implements **Clean Architecture**, utilizing **Dependency Injection (DI)** and **Inversion of Control (IoC)** through **Inversify**. A **Factory Pattern** has been used to easily integrate additional exchanges.
@@ -26,9 +27,9 @@ This project is a **TypeScript-based** application that retrieves and manages mi
       - MidPriceService.test.ts
       - MidPriceServiceFactory.test.ts
   - domain # Core entities and interfaces
-    - SymbolsForDI.ts
+    - symbols.ts
     - entities
-      - Binance.ts
+      - HuobiTypes.d.ts
       - GlobalMidPrice.ts
       - OrderBook.ts
     - interfaces

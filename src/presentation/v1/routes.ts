@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { IMidPriceService } from 'src/domain/interfaces/IMidPriceService';
+import {GlobalMidPrice} from "../../domain/entities/GlobalMidPrice";
+import { IMidPriceService } from '../../domain/interfaces/IMidPriceService';
 
 const router = Router();
 
@@ -25,10 +26,14 @@ const router = Router();
 router.get('/global-mid-price', async (req: Request, res: Response) => {
     try {
         const midPriceService: IMidPriceService = req.app.locals.midPriceService;
-        const midPrice = await midPriceService.calculateGlobalMidPrice();
-        res.json(midPrice);
+        const midPrice: GlobalMidPrice = await midPriceService.calculateGlobalMidPrice();
+        res
+            .status(200)
+            .json(midPrice);
     } catch (error) {
-        res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+        res
+            .status(500)
+            .json({ error: error instanceof Error ? error.message : String(error) });
     }
 });
 
@@ -60,7 +65,7 @@ router.get('/global-mid-price/stream', async (req: Request, res: Response) => {
         const midPriceService: IMidPriceService = req.app.locals.midPriceService;
 
         const updateMidPrice = async () => {
-            const midPrice = await midPriceService.calculateGlobalMidPrice();
+            const midPrice: GlobalMidPrice = await midPriceService.calculateGlobalMidPrice();
             res.write(`${JSON.stringify(midPrice)} \n\n`);
         };
 
@@ -74,7 +79,9 @@ router.get('/global-mid-price/stream', async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+        res
+            .status(500)
+            .json({ error: error instanceof Error ? error.message : String(error) });
     }
 });
 
