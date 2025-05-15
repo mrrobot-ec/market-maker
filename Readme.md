@@ -1,116 +1,175 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mrrobot-ec/market-maker)
+
 # Exchange MidPrice Service
 
-This project is a **TypeScript-based** application that retrieves and manages mid-prices from multiple cryptocurrency exchanges using **Express**, **Inversify**, **Jest**, **Winston**, and **Swagger**. The code adheres to **SOLID principles** and implements **Clean Architecture**, utilizing **Dependency Injection (DI)** and **Inversion of Control (IoC)** through **Inversify**. A **Factory Pattern** has been used to easily integrate additional exchanges.
+A TypeScript application that calculates global mid-prices from multiple cryptocurrency exchanges (Binance, Huobi, and Kraken) using a clean architecture approach with design patterns.
 
----
+🚀 **Features**
 
-## 🚀 Features
+* **Clean Architecture:** Clear separation between domain, application, infrastructure, and presentation layers
+* **SOLID Principles:** Adherence to Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion principles
+* **Dependency Injection:** Leveraging InversifyJS for IoC container and dependency management
+* **Multiple Exchange Integration:** Support for Binance (WebSocket), Huobi (REST), and Kraken (REST)
+* **Resilient WebSocket Handling:** Exponential backoff reconnection strategy for WebSocket connections
+* **Metrics and Monitoring:** Performance tracking and exchange reliability metrics
+* **API Documentation:** Comprehensive Swagger documentation
+* **Graceful Shutdown:** Proper resource cleanup and connection handling
 
-- **Clean Architecture:** Clear separation of concerns between different application layers.
-- **DI and IoC:** Use of Inversify for managing dependencies.
-- **Factory Pattern:** Simplifies the extension of exchange services.
-- **Logging:** Winston logger for enhanced traceability.
-- **Swagger API Documentation:** Comprehensive API documentation with Swagger UI.
-- **Unit Testing:** Tests written with Jest to ensure code reliability.
+📊 **Architecture**
 
----
+The application follows a clean architecture approach with four main layers:
 
-## 🗂 Project Structure
+* **Domain Layer:** Core business entities and interfaces
+* **Application Layer:** Business logic and use cases
+* **Infrastructure Layer:** External service implementations and technical concerns
+* **Presentation Layer:** API endpoints and documentation
 
-- src
-  - app.ts # Application entry point
-  - application # Core business logic layer
-    - MidPriceService.ts
-    - MidPriceServiceFactory.ts
-    - **tests**
-      - MidPriceService.test.ts
-      - MidPriceServiceFactory.test.ts
-  - domain # Core entities and interfaces
-    - symbols.ts
-    - entities
-      - HuobiTypes.d.ts
-      - GlobalMidPrice.ts
-      - OrderBook.ts
-    - interfaces
-      - IExchangeService.ts
-      - IMidPriceService.ts
-  - infrastructure # Service implementations and DI container
-    - Logger.ts
-    - **tests**
-      - Container.test.ts
-    - container.ts
-    - services
-      - rest
-        - HuobiRestService.ts
-        - KrakenRestService.ts
-        - **tests**
-          - HuobiRestService.test.ts
-          - KrakenRestService.test.ts
-      - websocket
-        - BinanceWebSocketService.ts
-        - **tests**
-          - BinanceWebSocketService.test.ts
-  - presentation # API routes and Swagger documentation
-    - swagger.ts
-    - v1
-      - routes.ts
-
----
-
-## 🖼️ Images
-
-### Class Diagram
+🖼️ ***Class Diagram***
 
 ![image info](./imgs/class-diag.png)
 
-### Swagger
+🗂 **Project Structure**
 
-## ![image info](./imgs/swagger.png)
+```
+src/
+├── app.ts                      # Application entry point
+├── application/                # Core business logic layer
+│   ├── MidPriceService.ts
+│   ├── MidPriceServiceFactory.ts
+│   └── tests/
+├── domain/                     # Core entities and interfaces
+│   ├── entities/
+│   │   ├── GlobalMidPrice.ts
+│   │   └── OrderBook.ts
+│   ├── interfaces/
+│       ├── IExchangeService.ts
+│       └── IMidPriceService.ts
+├── infrastructure/             # Service implementations and DI container
+│   ├── di/                     # Dependency injection setup
+│   │   ├── bindings/
+│   │   │   ├── loggerBindings.ts
+│   │   │   ├── exchangeServicesBindings.ts
+│   │   │   └── midPriceBindings.ts
+│   │   ├── symbols.ts
+│   │   └── container.ts
+│   ├── Logger.ts
+│   ├── monitoring/             # Metrics and monitoring
+│   └── services/
+│       ├── rest/
+│       │   ├── KrakenRestService.ts
+│       │   ├── HuobiRestService.ts
+│       │   └── mappers/
+│       ├── websocket/
+│       │   ├── BaseWebSocketService.ts
+│       │   ├── BinanceWebSocketService.ts
+│       │   ├── mappers/
+│       │   └── types/
+│       └── tests/
+└── presentation/               # API routes and Swagger documentation
+├── swagger.ts
+└── v1/
+└── routes.ts
+```
 
----
+📑 **API Endpoints**
 
-## 📑 API Endpoints
+| Endpoint                    | Method | Description                                                    |
+| :-------------------------- | :----- |:---------------------------------------------------------------|
+| `/v1/global-mid-price`       | `GET`  | Returns the current global mid-price with exchange data        |
+| `/v1/stream-global-mid-price`| `GET`  | Provides a real-time SSE stream of mid-price updates           |
+| `/api-docs`                 | `GET`  | Swagger documentation UI                                       |
 
-- **GET /global-mid-price:** Retrieves the computed global mid-price from multiple exchanges.
-- **GET /stream-global-mid-price:** Streams the real-time global mid-price using **Server-Sent Events (SSE)**.
+🔄 **Exchange Services**
 
----
+The application integrates with multiple cryptocurrency exchanges:
 
-## 📚 How to Run
+* **Binance:** Real-time order book data via WebSocket connection
+* **Huobi:** Order book data via REST API
+* **Kraken:** Order book data via REST API
 
-1.  Clone the repository and navigate to the project directory.
+Each exchange service implements the `IExchangeService` interface, allowing for consistent handling across different data sources.
+
+📊 **Metrics and Monitoring**
+
+The application includes a comprehensive metrics system that tracks:
+
+* Calculation success and failure rates
+* Exchange-specific reliability metrics
+* Performance measurements
+* WebSocket connection status
+
+These metrics are available in the response of the endpoints for simplicity but they can be added to a monitoring system like Prometheus, Datadog, or CloudWatch.
+
+📚 **Getting Started**
+
+**Prerequisites**
+
+* Node.js 14.x or higher
+* npm or yarn
+
+**Installation**
+
+1.  Clone the repository:
+    ```bash
+    git clone [https://github.com/your-username/market-maker.git](https://github.com/your-username/market-maker.git)
+    cd market-maker
+    ```
 2.  Install dependencies:
-    `npm install`
-3.  Run the project in production mode:
-    `npm start`
-4.  For development mode with hot reloading:
-    `npm run dev`
+    ```bash
+    npm install
+    ```
+3.  Build the project:
+    ```bash
+    npm run build
+    ```
 
----
+**Running the Application**
 
-## 🧪 Running Tests
+**Development Mode**
+  ```bash
+    npm run dev
+  ```
 
-To execute unit tests:
-`npm test`
+**Running the Application**
 
----
+**Production Mode**
 
-## 🧹 Linting
+```bash
+  npm start
+```
 
-To lint the codebase:
-`npm run lint`
+🧪 **Testing**
 
----
+**Run the test suite**
+  ```bash
+    npm test
+  ```
 
-## 🔧 Pending Improvements
+**Run tests with coverage**
+  ```bash
+    npm run test:coverage
+  ```
 
-- Add support for environment variables to replace hardcoded API URLs.
-- Implement integration tests.
-- Enhance error handling and retries for exchange services.
+🧹 **Linting**
+  ```bash
+    npm run lint
+  ```
 
----
+🔧 **Future Improvements**
 
-## 📜 License
+* Add support for environment variables to replace hardcoded API URLs
+* Implement persistent storage for metrics
+* Add more exchange integrations
+* Enhance circuit breaker pattern implementation
+* Implement integration tests
+* Implement strategy pattern for different global price calculations
+
+📜 **License**
 
 This project is licensed under the MIT License.
+
+Wiki pages you might want to explore:
+
+* [DeepWiki (mrrobot-ec/market-maker)](https://deepwiki.com/mrrobot-ec/market-maker)
+
+
